@@ -17,4 +17,4 @@
  - create token 
  - get user by id , (put , delete ) method implement CRUD opentaion   
  - create refresh token
- - add logg out api
+ - add logout api and make delete the refresh token
