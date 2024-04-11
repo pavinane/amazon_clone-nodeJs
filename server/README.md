@@ -22,3 +22,9 @@
  <!-- Products -->
 - create products and make it crud thing implemented using  product models
 
+# getting product by price 
+
+- gte = Greater Than Equal
+- gt = Greater Than
+- lte = Lesser Than Equal
+- lt = Lesser Than

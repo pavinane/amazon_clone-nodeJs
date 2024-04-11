@@ -8,11 +8,12 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controller/productController");
+const { authMiddleware, isAdmin } = require("../middlewares/authToken");
 
-router.post("/", createProduct);
-router.get("/getallproduct", getAllProduct);
+router.post("/", authMiddleware, isAdmin, createProduct);
+router.get("/getallproduct", authMiddleware, isAdmin, getAllProduct);
 router.get("/:id", getProductId);
-router.put("/:id", updateProduct);
-router.delete("/:id", deleteProduct);
+router.put("/:id", authMiddleware, isAdmin, updateProduct);
+router.delete("/:id", authMiddleware, isAdmin, deleteProduct);
 
 module.exports = router;

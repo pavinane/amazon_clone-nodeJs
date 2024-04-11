@@ -22,13 +22,27 @@ const createProduct = asyncHandler(async (req, res) => {
 // Get All product
 const getAllProduct = asyncHandler(async (req, res) => {
   try {
-    const getProduct = await Product.find();
+    const queryObj = { ...req.query };
+    const excludeFields = ["page", "sort", "limit", "fields"];
+    excludeFields.forEach((el) => delete queryObj[el]);
+    // this is another method to implemented query
+    // const getProduct = await Product.where("category").equals(
+    //   req.query.category
+    // );
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    // make query for the perticular product to get
+    const query = await Product.find(JSON.parse(queryStr));
+    const product = await query;
+
     res.status(200).json({
       status: "Success",
-      data: [getProduct],
+      data: [product],
     });
   } catch (error) {
-    throw new Error("Successfully Get all Product ");
+    throw new Error("failed Get all Product ");
   }
 });
 
