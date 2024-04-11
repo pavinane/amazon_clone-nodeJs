@@ -169,7 +169,7 @@ const logout = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: true, // Fixed typo
     });
-    return res.sendStatus(404); // forbidden
+    return res.sendStatus(204); // forbidden
   }
 
   await User.findOneAndUpdate({ refreshToken }, { refreshToken: "" });
@@ -178,7 +178,7 @@ const logout = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true,
   });
-  res.sendStatus(404); // forbidden
+  res.sendStatus(204); // forbidden
 });
 
 // Get All user who are all register
