@@ -5,7 +5,7 @@
 
 # create install  plugins
 
- - npm i mongoose dotenv express bcrypt body-parser 
+ - npm i mongoose dotenv express bcrypt body-parser cookie-parser dotenv express-async-handler morgan slugify
 
 # models
  - userModels: !mdbg generate user model schema 
@@ -18,3 +18,7 @@
  - get user by id , (put , delete ) method implement CRUD opentaion   
  - create refresh token
  - add logout api and make delete the refresh token
+
+ <!-- Products -->
+- create products and make it crud thing implemented using  product models
+
