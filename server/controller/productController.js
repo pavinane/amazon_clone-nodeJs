@@ -22,6 +22,7 @@ const createProduct = asyncHandler(async (req, res) => {
 // Get All product
 const getAllProduct = asyncHandler(async (req, res) => {
   try {
+    // Filtering
     const queryObj = { ...req.query };
     const excludeFields = ["page", "sort", "limit", "fields"];
     excludeFields.forEach((el) => delete queryObj[el]);
@@ -34,7 +35,16 @@ const getAllProduct = asyncHandler(async (req, res) => {
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
     // make query for the perticular product to get
-    const query = await Product.find(JSON.parse(queryStr));
+    const query = Product.find(JSON.parse(queryStr));
+
+    // Sorting
+    // if (req.query.sort) {
+    //   const sortBy = req.query.sort.split(",").join(" ");
+    //   query = query.sort(sortBy);
+    // } else {
+    //   query = query.sort("-createdAt");
+    // }
+
     const product = await query;
 
     res.status(200).json({

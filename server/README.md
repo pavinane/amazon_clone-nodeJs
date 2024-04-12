@@ -24,7 +24,7 @@
 
 # getting product by price 
 
-- gte = Greater Than Equal
-- gt = Greater Than
+- gte = Greater Than Equal -  http://localhost:7000/api/product/getallproduct?price[gte]=700
+- gt = Greater Than  
 - lte = Lesser Than Equal
 - lt = Lesser Than
