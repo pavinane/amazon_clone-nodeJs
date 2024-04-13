@@ -20,6 +20,7 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 // Get All product
+
 const getAllProduct = asyncHandler(async (req, res) => {
   try {
     // Filtering
@@ -35,21 +36,29 @@ const getAllProduct = asyncHandler(async (req, res) => {
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
     // make query for the perticular product to get
-    const query = Product.find(JSON.parse(queryStr));
+    let query = Product.find(JSON.parse(queryStr));
 
-    // Sorting
-    // if (req.query.sort) {
-    //   const sortBy = req.query.sort.split(",").join(" ");
-    //   query = query.sort(sortBy);
-    // } else {
-    //   query = query.sort("-createdAt");
-    // }
+    // Sorting;
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("-createdAt");
+    }
 
-    const product = await query;
+    // Limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      query = query.select(fields);
+    } else {
+      query = query.select("__v");
+    }
+
+    const products = await query;
 
     res.status(200).json({
       status: "Success",
-      data: [product],
+      data: products,
     });
   } catch (error) {
     throw new Error("failed Get all Product ");
