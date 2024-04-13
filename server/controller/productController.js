@@ -54,7 +54,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
       query = query.select("-__v"); // (-__v) mention like this that perticular only remove
     }
 
-    // pagination
+    // pagination  queries
     const page = req.query.page;
     const limit = req.query.limit;
     const skip = (page - 1) * limit;
