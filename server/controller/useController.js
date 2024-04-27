@@ -68,6 +68,9 @@ const loginUser = asyncHandler(async (req, res) => {
           new: true,
         }
       );
+      // formerUser.refreshToken = refreshToken;
+      // await user.save();
+
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         maxAge: 72 * 60 * 60 * 1000,
@@ -317,6 +320,22 @@ const isUnBlockedUser = asyncHandler(async (req, res) => {
   }
 });
 
+// update password
+
+const updatePassword = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const password = req.body.password;
+  validateMongoDBId(_id);
+  const user = await User.findById(_id);
+  if (password) {
+    user.password = password;
+    const updatePassword = await user.save();
+    res.json(updatePassword);
+  } else {
+    res.json(user);
+  }
+});
+
 module.exports = {
   createUser,
   loginUser,
@@ -328,4 +347,5 @@ module.exports = {
   isBlockedUser,
   isUnBlockedUser,
   handleRefreshToken,
+  updatePassword,
 };
