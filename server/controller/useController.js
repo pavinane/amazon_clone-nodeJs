@@ -5,6 +5,7 @@ const validateMongoDBId = require("../utils/validateMongoBid");
 const { generateRefereshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailController");
+const crypto = require("crypto");
 
 // Register controller to create Account
 async function createUser(req, res) {
@@ -131,34 +132,6 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
 });
 
 // LoggOut
-
-// const logout = asyncHandler(async (req, res) => {
-//   const cookie = req.cookies;
-
-//   if (!cookie?.refreshToken) throw new Error("there is no refresh token");
-
-//   const refreshToken = cookie?.refreshToken;
-//   const user = await User.findOne({ refreshToken });
-
-//   if (!user) {
-//     res.clearCookie("refreshToken", {
-//       httpOnly: true,
-//       secure: trnue,
-//     });
-//     return res.sendStatus(404); // forbidden
-//   }
-//   await User.findOneAndUpdate(
-//     { refreshToken },
-//     {
-//       refreshToken: "",
-//     }
-//   );
-//   res.clearCookie("refreshToken", {
-//     httpOnly: true,
-//     secure: trnue,
-//   });
-//   res.sendStatus(404); // forbidden
-// });
 
 const logout = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
@@ -358,6 +331,22 @@ const forgotPasswordtoken = asyncHandler(async (req, res) => {
   }
 });
 
+const resetPassword = asyncHandler(async (req, res) => {
+  const { password } = req.body;
+  const { token } = req.params;
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+  if (!user) throw new Error("Token Expired,Please try again later");
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+  res.json(user);
+});
+
 module.exports = {
   createUser,
   loginUser,
@@ -371,4 +360,5 @@ module.exports = {
   handleRefreshToken,
   updatePassword,
   forgotPasswordtoken,
+  resetPassword,
 };
