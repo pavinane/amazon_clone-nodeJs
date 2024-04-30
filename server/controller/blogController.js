@@ -24,9 +24,11 @@ const updatBlog = asyncHandler(async (req, res) => {
 });
 const idBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  //   validateMongoDBId(id);
+  validateMongoDBId(id);
   try {
-    const getidBlog = await Blog.findById(id);
+    const getBlog = await Blog.findById(id)
+      .populate("likes")
+      .populate("dislikes");
     const updateViews = await Blog.findByIdAndUpdate(
       id,
       {
@@ -36,7 +38,7 @@ const idBlog = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    res.json({ getidBlog, updateViews });
+    res.json(getBlog);
   } catch (error) {
     throw new Error(error);
   }
@@ -72,9 +74,7 @@ const likeBlog = asyncHandler(async (req, res) => {
   // find if the user liked the blog
   const isLiked = blog?.isLiked;
   // find if the user disliked the blog
-  //   const alreadyDisliked = blog?.dislikes?.find(
-  //     (userId = userId?.toString() === loginUserId?.toString())
-  //   );
+
   const alreadyDisliked = blog?.dislikes?.find(
     (userId) => userId?.toString() === loginUserId?.toString()
   );
