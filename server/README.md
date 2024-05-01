@@ -28,3 +28,8 @@
 - gt = Greater Than  
 - lte = Lesser Than Equal
 - lt = Lesser Than
+
+1. create product category
+2. create brand category
+3. create blog category
+4. add wishlist on product
