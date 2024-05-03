@@ -7,13 +7,16 @@ const {
   getAllProduct,
   updateProduct,
   deleteProduct,
+  addToWishList,
 } = require("../controller/productController");
 const { authMiddleware, isAdmin } = require("../middlewares/authToken");
 
 router.post("/", authMiddleware, isAdmin, createProduct);
 router.get("/getallproduct", authMiddleware, isAdmin, getAllProduct);
-router.get("/:id", getProductId);
-router.put("/:id", authMiddleware, isAdmin, updateProduct);
+
 router.delete("/:id", authMiddleware, isAdmin, deleteProduct);
+router.get("/:id", getProductId);
+router.put("/wishlist", authMiddleware, addToWishList);
+router.put("/:id", authMiddleware, isAdmin, updateProduct);
 
 module.exports = router;

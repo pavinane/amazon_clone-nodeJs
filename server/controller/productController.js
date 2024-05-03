@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Product = require("../models/productModel");
 const slugify = require("slugify");
+const User = require("../models/userModels");
 
 // create Product
 const createProduct = asyncHandler(async (req, res) => {
@@ -106,10 +107,10 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     res.status(200).json({
       message: "Successfully product updated",
-      data: [productUpdate],
+      data: productUpdate,
     });
   } catch (error) {
-    throw new Error("prodcut not be updated");
+    throw new Error("product not be updated");
   }
 });
 // DeleteProdcut
@@ -123,7 +124,42 @@ const deleteProduct = asyncHandler(async (req, res) => {
       data: [productDelete],
     });
   } catch (error) {
-    throw new Error("prodcut not be updated");
+    throw new Error("product not be updated");
+  }
+});
+
+const addToWishList = asyncHandler(async (req, res) => {
+  const { _id } = req?.user;
+  const { prodId } = req.body;
+  console.log(req.user);
+  try {
+    const user = await User.findById(_id);
+    const alreadyadded = user?.wishlist?.find((id) => id.toString() === prodId);
+    if (alreadyadded) {
+      let user = await User.findByIdAndUpdate(
+        _id,
+        {
+          $pull: { wishlist: prodId },
+        },
+        {
+          new: true,
+        }
+      );
+      res.json(user);
+    } else {
+      let user = await User.findByIdAndUpdate(
+        _id,
+        {
+          $push: { wishlist: prodId },
+        },
+        {
+          new: true,
+        }
+      );
+      res.json(user);
+    }
+  } catch (error) {
+    throw new Error("not added wishlist");
   }
 });
 
@@ -133,4 +169,5 @@ module.exports = {
   getAllProduct,
   updateProduct,
   deleteProduct,
+  addToWishList,
 };
