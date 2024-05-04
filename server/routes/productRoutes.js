@@ -9,6 +9,7 @@ const {
   deleteProduct,
   addToWishList,
   ratingProduct,
+  uploadImages,
 } = require("../controller/productController");
 const { authMiddleware, isAdmin } = require("../middlewares/authToken");
 const { uploadPhoto, productImgResize } = require("../middlewares/uploadImage");
@@ -19,7 +20,8 @@ router.put(
   authMiddleware,
   isAdmin,
   uploadPhoto.array("images", 10),
-  productImgResize
+  productImgResize,
+  uploadImages
 );
 router.get("/getallproduct", authMiddleware, isAdmin, getAllProduct);
 

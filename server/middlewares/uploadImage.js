@@ -1,6 +1,16 @@
-const shrap = require("sharp");
+const sharp = require("sharp");
 const multer = require("multer");
 const path = require("path");
+
+// const multerStorage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, path.join(__dirname, "../public/images"));
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     cb(null, file.filename + "-" + uniqueSuffix + ".jpeg");
+//   },
+// });
 
 const multerStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -8,7 +18,7 @@ const multerStorage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.filename + "-" + uniqueSuffix + ".jpeg");
+    cb(null, file.fieldname + "-" + uniqueSuffix + ".jpeg"); // Use 'fieldname' instead of 'filename'
   },
 });
 
@@ -28,7 +38,7 @@ const multerFilter = (req, file, cb) => {
 const productImgResize = async (req, es, next) => {
   if (!req.files) return next();
   await Promise.all(
-    req.files.map(async (file) => {
+    req.files?.map(async (file) => {
       await sharp(file.path)
         .resize(300, 300)
         .toFormat("jpeg")

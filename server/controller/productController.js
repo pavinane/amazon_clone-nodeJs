@@ -2,6 +2,9 @@ const asyncHandler = require("express-async-handler");
 const Product = require("../models/productModel");
 const slugify = require("slugify");
 const User = require("../models/userModels");
+const validateMongoDBId = require("../utils/validateMongoBid");
+const cloudinaryUploadImg = require("../utils/cloudinary");
+const fs = require("fs");
 
 // create Product
 const createProduct = asyncHandler(async (req, res) => {
@@ -163,47 +166,6 @@ const addToWishList = asyncHandler(async (req, res) => {
   }
 });
 
-// const ratingProduct = asyncHandler(async (req, res) => {
-//   const { _id } = req.user;
-//   const { star, prodId } = req.body;
-
-//   try {
-//     const product = await Product.findById(prodId);
-//     const alreadyRated = product?.rating?.find(
-//       (id) => id.postedby.toString() === _id.toString()
-//     );
-
-//     if (alreadyRated) {
-//       const updateRating = await Product.updateOne(
-//         {
-//           rating: { $elemMatch: alreadyRated },
-//         },
-
-//         {
-//           $set: { "ratings.$.star": star },
-//         },
-//         {
-//           new: true,
-//         }
-//       );
-//       res.json(updateRating);
-//     } else {
-//       let rateProduct = await Product.findByIdAndUpdate(
-//         prodId,
-//         {
-//           $push: { rating: star, postedby: _id },
-//         },
-//         {
-//           new: true,
-//         }
-//       );
-//       res.json(rateProduct);
-//     }
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// });
-
 const ratingProduct = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { star, prodId, comment } = req.body;
@@ -264,6 +226,37 @@ const ratingProduct = asyncHandler(async (req, res) => {
   }
 });
 
+const uploadImages = asyncHandler(async (req, res) => {
+  console.log(req?.files);
+  const { id } = req.params;
+  validateMongoDBId(id);
+  try {
+    const uploader = (path) => cloudinaryUploadImg(path, "images");
+    const urls = [];
+    const files = req.files;
+    for (const file of files) {
+      const { path } = file;
+      const newpath = await uploader(path);
+      urls.push(newpath);
+      fs.unlinkSync(path);
+    }
+    const findProduct = await Product.findByIdAndUpdate(
+      id,
+      {
+        images: urls.map((file) => {
+          return file;
+        }),
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(findProduct);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createProduct,
   getProductId,
@@ -272,4 +265,5 @@ module.exports = {
   deleteProduct,
   addToWishList,
   ratingProduct,
+  uploadImages,
 };
