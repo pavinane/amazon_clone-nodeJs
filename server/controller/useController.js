@@ -8,7 +8,6 @@ const { generateRefereshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailController");
 const crypto = require("crypto");
-const { populate } = require("../models/blogModel");
 
 // Register controller to create Account
 async function createUser(req, res) {
@@ -455,7 +454,7 @@ const userCart = asyncHandler(async (req, res) => {
     }
     for (let i = 0; i < cart.length; i++) {
       let object = {};
-      object.products = cart[i]._id;
+      object.product = cart[i]._id;
       object.count = cart[i].count;
       object.color = cart[i].color;
       let getPrice = await Product.findById(cart[i]._id)
@@ -465,14 +464,16 @@ const userCart = asyncHandler(async (req, res) => {
       products.push(object);
     }
     let cartTotal = 0;
-
     for (let i = 0; i < products.length; i++) {
-      const price = parseFloat(products[i].price); // Ensure price is a valid number
-      const count = parseInt(products[i].count); // Ensure count is a valid number
-      if (!isNaN(price) && !isNaN(count)) {
-        cartTotal += price * count;
-      }
+      cartTotal = cartTotal + products[i].price * products[i].count;
     }
+    // for (let i = 0; i < products.length; i++) {
+    //   const price = parseFloat(products[i].price); // Ensure price is a valid number
+    //   const count = parseInt(products[i].count); // Ensure count is a valid number
+    //   if (!isNaN(price) && !isNaN(count)) {
+    //     cartTotal += price * count;
+    //   }
+    // }
 
     let newCart = await new Cart({
       products,
@@ -484,6 +485,43 @@ const userCart = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+const getUserCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDBId(_id);
+  try {
+    const cart = await Cart.findOne({ orderby: _id }).populate(
+      "products.product"
+    );
+    res.json(cart);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const emptyCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDBId(_id);
+  try {
+    const user = await User.findOne({ _id });
+    const cart = await Cart.findOneAndDelete({ orderby: user._id });
+    res.json(cart);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+// const deleteIdCart = asyncHandler(async (req, res) => {
+//   const { _id } = req.user;
+//   const { id } = req.params;
+//   validateMongoDBId(_id);
+//   try {
+//     const user = await User.findOne({ _id });
+//     const cart = await Cart.findOneAndDelete({ orderby: id });
+//     res.json(cart);
+//   } catch (error) {
+//     throw new Error(error);
+//   }
+// });
 
 module.exports = {
   createUser,
@@ -503,4 +541,6 @@ module.exports = {
   getWishList,
   saveAddress,
   userCart,
+  getUserCart,
+  emptyCart,
 };
