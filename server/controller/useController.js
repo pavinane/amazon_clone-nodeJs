@@ -1,6 +1,7 @@
 const generateToken = require("../config/jwtoken");
 const User = require("../models/userModels");
 const Product = require("../models/productModel");
+const Coupon = require("../models/couponModel");
 const Cart = require("../models/cartModel");
 const asyncHandler = require("express-async-handler");
 const validateMongoDBId = require("../utils/validateMongoBid");
@@ -523,6 +524,53 @@ const emptyCart = asyncHandler(async (req, res) => {
 //   }
 // });
 
+// const applyCoupon = asyncHandler(async (req, res) => {
+//   const { coupon } = req.body;
+//   const { _id } = req.user;
+//   validateMongoDBId(_id);
+//   const validCoupon = await Coupon.find({ name: coupon });
+//   if (validCoupon === null) {
+//     throw new Error("Coupon Invalid");
+//   }
+//   const user = await User.findOne({ _id });
+//   let { cartTotal } = await Cart.findOne({
+//     orderby: user?._id,
+//   }).populate("products.product");
+//   let totalAfterDiscount = (
+//     cartTotal -
+//     (cartTotal * validCoupon.discount) / 100
+//   ).toFixed(2);
+//   await Cart.findOneAndUpdate(
+//     { orderby: user?._id },
+//     { totalAfterDiscount },
+//     { new: true }
+//   );
+//   res.json(totalAfterDiscount);
+// });
+
+const applyCoupon = asyncHandler(async (req, res) => {
+  const { coupon } = req.body;
+  const { _id } = req.user;
+  validateMongoDBId(_id);
+  const validCoupon = await Coupon.findOne({ name: coupon }); // Use findOne to find a single document
+  if (!validCoupon) {
+    throw new Error("Coupon Invalid");
+  }
+  const user = await User.findOne({ _id });
+  let { cartTotal } = await Cart.findOne({
+    orderby: user?._id,
+  }).populate("products.product");
+  let totalAfterDiscount = cartTotal - (cartTotal * validCoupon.discount) / 100;
+  // Ensure totalAfterDiscount is a Number, not a string
+  totalAfterDiscount = parseFloat(totalAfterDiscount.toFixed(2));
+  await Cart.findOneAndUpdate(
+    { orderby: user?._id },
+    { totalAfterDiscount },
+    { new: true }
+  );
+  res.json(totalAfterDiscount);
+});
+
 module.exports = {
   createUser,
   loginUser,
@@ -543,4 +591,5 @@ module.exports = {
   userCart,
   getUserCart,
   emptyCart,
+  applyCoupon,
 };

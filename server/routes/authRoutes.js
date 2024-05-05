@@ -21,6 +21,7 @@ const {
   userCart,
   getUserCart,
   emptyCart,
+  applyCoupon,
 } = require("../controller/useController");
 const { authMiddleware, isAdmin } = require("../middlewares/authToken");
 
@@ -38,6 +39,7 @@ router.put("/save-address", authMiddleware, saveAddress);
 router.post("/user-cart", authMiddleware, userCart);
 router.get("/user-cart", authMiddleware, getUserCart);
 router.delete("/empty-cart", authMiddleware, emptyCart);
+router.post("/apply-coupon", authMiddleware, applyCoupon);
 router.get("/logout", logout);
 router.put("/edit-user", authMiddleware, updateUser);
 router.delete("/deleteuser/:id", authMiddleware, deleteUserId);
