@@ -1,5 +1,7 @@
 const generateToken = require("../config/jwtoken");
 const User = require("../models/userModels");
+const Product = require("../models/productModel");
+const Cart = require("../models/cartModel");
 const asyncHandler = require("express-async-handler");
 const validateMongoDBId = require("../utils/validateMongoBid");
 const { generateRefereshToken } = require("../config/refreshToken");
@@ -436,6 +438,52 @@ const getWishList = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+const userCart = asyncHandler(async (req, res) => {
+  const { cart } = req.body;
+  const { _id } = req.user;
+  validateMongoDBId(_id);
+  try {
+    let products = [];
+    const findUser = await User.findById(_id);
+    let alreadyExistcart = await Cart.findOne({ orderby: findUser._id });
+    // if (alreadyExistcart) {
+    //   await alreadyExistcart.remove(); // Use await here to ensure the remove operation completes before proceeding
+    // }
+
+    if (alreadyExistcart && typeof alreadyExistcart.remove === "function") {
+      await alreadyExistcart.remove();
+    }
+    for (let i = 0; i < cart.length; i++) {
+      let object = {};
+      object.products = cart[i]._id;
+      object.count = cart[i].count;
+      object.color = cart[i].color;
+      let getPrice = await Product.findById(cart[i]._id)
+        ?.select("price")
+        .exec();
+      object.price = getPrice?.price;
+      products.push(object);
+    }
+    let cartTotal = 0;
+
+    for (let i = 0; i < products.length; i++) {
+      const price = parseFloat(products[i].price); // Ensure price is a valid number
+      const count = parseInt(products[i].count); // Ensure count is a valid number
+      if (!isNaN(price) && !isNaN(count)) {
+        cartTotal += price * count;
+      }
+    }
+
+    let newCart = await new Cart({
+      products,
+      cartTotal,
+      orderby: findUser?._id,
+    }).save();
+    res.json(newCart);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 module.exports = {
   createUser,
@@ -454,4 +502,5 @@ module.exports = {
   loginAdmin,
   getWishList,
   saveAddress,
+  userCart,
 };
