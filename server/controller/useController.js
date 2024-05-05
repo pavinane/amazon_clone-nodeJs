@@ -6,6 +6,7 @@ const { generateRefereshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailController");
 const crypto = require("crypto");
+const { populate } = require("../models/blogModel");
 
 // Register controller to create Account
 async function createUser(req, res) {
@@ -87,6 +88,60 @@ const loginUser = asyncHandler(async (req, res) => {
         mobile: formerUser?.mobile,
         role: formerUser?.role,
         token: generateToken(formerUser?._id),
+      };
+      res.status(200).json({
+        staus: "Success",
+        data: [loginUsersDara],
+        message: "Your account is created succcessfully",
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      staus: "failed",
+      data: [],
+      message: "Your account is login failed",
+    });
+  }
+});
+
+// Admin controll
+const loginAdmin = asyncHandler(async (req, res) => {
+  // Add your login logic here
+
+  try {
+    const { email, password } = req.body;
+
+    const findAdmin = await User.findOne({ email });
+    if (findAdmin.role !== "admin") throw new Error("Not Authorised");
+
+    if (findAdmin && (await findAdmin.isPasswordMatched(password))) {
+      const refreshToken = await generateRefereshToken(findAdmin?._id);
+      const updateUser = await User.findByIdAndUpdate(
+        findAdmin?._id,
+        {
+          refreshToken: refreshToken,
+        },
+        {
+          new: true,
+        }
+      );
+      // findAdmin.refreshToken = refreshToken;
+      // await user.save();
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        maxAge: 72 * 60 * 60 * 1000,
+      });
+      // res.clearCookie("refreshToken");
+
+      const loginUsersDara = {
+        _id: findAdmin?._id,
+        firstName: findAdmin?.firstName,
+        lastName: findAdmin?.lastName,
+        email: findAdmin?.email,
+        mobile: findAdmin?.mobile,
+        role: findAdmin?.role,
+        token: generateToken(findAdmin?._id),
       };
       res.status(200).json({
         staus: "Success",
@@ -230,6 +285,31 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
+// save Address
+const saveAddress = asyncHandler(async (req, res, next) => {
+  const { _id } = req.user;
+  validateMongoDBId(_id);
+  try {
+    const updateByUser = await User.findByIdAndUpdate(
+      _id,
+      {
+        address: req?.body?.address,
+      },
+      {
+        new: true,
+      }
+    );
+    console.log("requser", updateByUser);
+    res.json(updateByUser);
+  } catch (error) {
+    res.status(200).json({
+      staus: "failed",
+      data: [],
+      messgae: "update is failed ",
+    });
+  }
+});
+
 // Delete the user by Id
 const deleteUserId = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -347,6 +427,16 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json(user);
 });
 
+const getWishList = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  try {
+    const findUser = await User.findById(_id).populate("wishlist");
+    res.json(findUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createUser,
   loginUser,
@@ -361,4 +451,7 @@ module.exports = {
   updatePassword,
   forgotPasswordtoken,
   resetPassword,
+  loginAdmin,
+  getWishList,
+  saveAddress,
 };
