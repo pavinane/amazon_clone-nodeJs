@@ -2,6 +2,7 @@ const generateToken = require("../config/jwtoken");
 const User = require("../models/userModels");
 const Product = require("../models/productModel");
 const Coupon = require("../models/couponModel");
+const Order = require("../models/orderModel");
 const Cart = require("../models/cartModel");
 const asyncHandler = require("express-async-handler");
 const validateMongoDBId = require("../utils/validateMongoBid");
@@ -9,6 +10,7 @@ const { generateRefereshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailController");
 const crypto = require("crypto");
+const uniqid = require("uniqid");
 
 // Register controller to create Account
 async function createUser(req, res) {
@@ -571,6 +573,49 @@ const applyCoupon = asyncHandler(async (req, res) => {
   res.json(totalAfterDiscount);
 });
 
+const createOrder = asyncHandler(async (req, res) => {
+  const { COD, couponApplied } = req.body;
+  const { _id } = req.user;
+  validateMongoDBId(_id);
+  try {
+    if (!COD) throw new Error("Cash order Failed");
+    const user = await User.findById(_id);
+    const userCart = await Cart.findOne({ orderby: user._id });
+    let finalAmount = 0;
+    if (couponApplied && userCart.totalAfterDiscount) {
+      finalAmount = userCart.totalAfterDiscount;
+    } else {
+      finalAmount = userCart.cartTotal;
+    }
+
+    let newOrder = await new Order({
+      products: userCart.products,
+      paymentIntent: {
+        id: uniqid(),
+        method: "COD",
+        amount: finalAmount,
+        status: "Cash on Delivery",
+        created: Date.now(),
+        currency: "usd",
+      },
+      orderby: user._id,
+      orderStatus: "Cash on Delivery",
+    }).save();
+    let update = userCart.products.map((item) => {
+      return {
+        updateOne: {
+          filter: { _id: item.product._id },
+          update: { $inc: { quality: -item.count, sold: +item.count } },
+        },
+      };
+    });
+    const updated = await Product.bulkWrite(update, {});
+    res.json({ message: "Success" });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createUser,
   loginUser,
@@ -592,4 +637,5 @@ module.exports = {
   getUserCart,
   emptyCart,
   applyCoupon,
+  createOrder,
 };
