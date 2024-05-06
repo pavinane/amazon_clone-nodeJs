@@ -616,6 +616,41 @@ const createOrder = asyncHandler(async (req, res) => {
   }
 });
 
+const getOrders = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDBId(_id);
+  try {
+    const userOrder = await Order.findOne({ orderby: _id })
+      .populate("products.product")
+      .exec();
+    res.json(userOrder);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+const updateOrders = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+  validateMongoDBId(id);
+  try {
+    const updateOrderStatus = await Order.findByIdAndUpdate(
+      id,
+      {
+        orderStatus: status,
+        paymentIntent: {
+          status: status,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updateOrderStatus);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createUser,
   loginUser,
@@ -638,4 +673,6 @@ module.exports = {
   emptyCart,
   applyCoupon,
   createOrder,
+  getOrders,
+  updateOrders,
 };

@@ -23,6 +23,8 @@ const {
   emptyCart,
   applyCoupon,
   createOrder,
+  getOrders,
+  updateOrders,
 } = require("../controller/useController");
 const { authMiddleware, isAdmin } = require("../middlewares/authToken");
 
@@ -47,5 +49,6 @@ router.put("/edit-user", authMiddleware, updateUser);
 router.delete("/deleteuser/:id", authMiddleware, deleteUserId);
 router.put("/block/:id", authMiddleware, isAdmin, isBlockedUser);
 router.put("/unblock/:id", authMiddleware, isAdmin, isUnBlockedUser);
-
+router.get("/get-order", authMiddleware, getOrders);
+router.put("/updateorder/:id", authMiddleware, isAdmin, updateOrders);
 module.exports = router;
