@@ -10,13 +10,14 @@ const {
   addToWishList,
   ratingProduct,
   uploadImages,
+  deleteImages,
 } = require("../controller/productController");
 const { authMiddleware, isAdmin } = require("../middlewares/authToken");
 const { uploadPhoto, productImgResize } = require("../middlewares/uploadImage");
 
 router.post("/", authMiddleware, isAdmin, createProduct);
 router.put(
-  "/upload/:id",
+  "/upload",
   authMiddleware,
   isAdmin,
   uploadPhoto.array("images", 10),
@@ -30,5 +31,6 @@ router.get("/:id", getProductId);
 router.put("/wishlist", authMiddleware, addToWishList);
 router.put("/rating", authMiddleware, ratingProduct);
 router.put("/:id", authMiddleware, isAdmin, updateProduct);
+router.put("/delete-img/:id", authMiddleware, isAdmin, deleteImages);
 
 module.exports = router;
