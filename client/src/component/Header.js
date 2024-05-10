@@ -86,6 +86,60 @@ function Header() {
           </div>
         </div>
       </div>
+      <div className="header-bottom py-3">
+        <div className="container-xxl">
+          <div className="row">
+            <div className="col-12">
+              <div className="menu-bottom d-flex align-items-center  gap-30">
+                <div>
+                  <div className="dropdown">
+                    <button
+                      className="btn btn-secondary dropdown-toggle bg-transparent border-0 d-flex gap-30 align-items-center"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <img src="/images/menu.svg" alt="" />{" "}
+                      <span className="d-inline-block">
+                        Shopping Categories
+                      </span>
+                    </button>
+                    <ul
+                      className="dropdown-menu "
+                      aria-labelledby="dropdownMenuButton1"
+                    >
+                      <li>
+                        <a className="dropdown-item text-white" href="/">
+                          Action
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item text-white" href="/">
+                          Another action
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item text-white" href="/">
+                          Something else here
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="menu-links">
+                  <div className="d-flex align-items-center gap-15">
+                    <NavLink to="/">Home</NavLink>
+                    <NavLink to="/">Our Stores</NavLink>
+                    <NavLink to="/">Blogs</NavLink>
+                    <NavLink to="/contact">Contact</NavLink>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
