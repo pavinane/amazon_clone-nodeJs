@@ -69,6 +69,7 @@ a {
   font-weight: 400;
   letter-spacing: 0.3;
   text-transform: uppercase;
+
 }
 
 .header-bottom .dropdown button:focus {
@@ -79,6 +80,37 @@ a {
   background-color: var(--color-131921);
   width: 100%;
   transform: translate3d(0px, 57px, 0px) !important;
+  cursor: pointer;
+}
+
+.header-bottom .dropdown-item {
+  padding: 20px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid var(--color-3b4149);
+
+}
+
+.header-bottom .dropdown-item:hover {
+  background-color: transparent !important;
+  color: var(--color-fedb69) !important;
 }
 
 /* Header End*/
+
+/* Footer Start */
+footer {
+  background-color: var(--color-232f3e);
+  color: white;
+}
+
+footer:not(:first-child) {
+  border-top: 1px solid var(--color-3b4149);
+}
+
+footer .input-group-text {
+  background-color: var(--color-232f3e) !important;
+  color: white;
+
+}
+
+/* Footer End */
