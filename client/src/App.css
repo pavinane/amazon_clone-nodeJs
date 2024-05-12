@@ -10,6 +10,7 @@
   --color-fedb69: #fedb69;
   --color-232f3e: #232f3e;
   --color-bf4800: #bf4800;
+  --color-f5f5f7: #f5f5f7;
 }
 
 body {
@@ -167,15 +168,17 @@ footer .input-group-text {
 
 
 
-
+.small-banner {
+  width: 49%;
+}
 
 .small-banner-content {
-  top: 10%;
-  left: 5%;
+  top: 25%;
+  left: 10%;
 }
 
 .small-banner-content>h4 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 24px;
   color: var(--color-bf4800);
@@ -185,19 +188,36 @@ footer .input-group-text {
 }
 
 .small-banner-content>h5 {
-  font-size: 52px;
+  font-size: 22px;
   font-weight: 500;
   letter-spacing: -2px;
   padding: 0;
   text-transform: none;
+  line-height: 34px;
 }
 
 .small-banner-content>p {
-  font-size: 18px;
-  line-height: 28px;
+  font-size: 14px;
+  line-height: 22px;
   letter-spacing: 0.4px;
   color: var(--color-131921);
 
 }
+
+/* Home wrapper-2 Start */
+.home-wrapper-2 {
+  background-color: var(--color-f5f5f7);
+}
+
+/* Home wrapper-2 End */
+
+/* Categories Start */
+.categories {
+  background-color: white;
+  box-shadow: 0px 0px 10px #0000001a;
+  padding: 15px;
+}
+
+/* Categories End */
 
 /* HomePage End */
