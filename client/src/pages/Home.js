@@ -251,6 +251,58 @@ function Home() {
           </div>
         </div>
       </section>
+      <section className="famous-wrapper py-2 home-wrapper-2">
+        <div className="container-xxl">
+          <div className="row">
+            <div className="col-3">
+              <div className="famous-card  p-2 position-relative">
+                <img src="images/famous-1.webp" alt="watch" />
+                <div className="famous-content position-absolute">
+                  <h5>Big Screen</h5>
+                  <h6>Smart Watch series 7</h6>
+                  <p>From $399 0r $16.2/mo. For 25 mo.</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-3">
+              <div className="famous-card  p-2 position-relative ">
+                <img src="images/famous-2.webp" alt="watch" />
+                <div className="famous-content position-absolute text-secondary">
+                  <h5>Big Screen</h5>
+                  <h6>Smart Watch series 7</h6>
+                  <p>From $399 0r $16.2/mo. For 25 mo.</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-3">
+              <div className="famous-card  p-2 position-relative">
+                <img
+                  src="https://pyxis.nymag.com/v1/imgs/b5b/619/500208ec042839981432cc44057d20d11d-2023-03-01-bluetooth-speaker7805-final.1x.rsquare.w200.jpg"
+                  alt="watch"
+                />
+                <div className="famous-content position-absolute">
+                  <h5>Big Screen</h5>
+                  <h6>Smart Watch series 7</h6>
+                  <p>From $399 0r $16.2/mo. For 25 mo.</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-3">
+              <div className="famous-card  p-2  position-relative">
+                <img
+                  src="https://imageio.forbes.com/specials-images/imageserve/63fa2c2ad4092acbb40f01ad/Apple--iPhone-15--iPhone-15-Pro-Max--iPhone-15-Pro--iPhone-15-Pro-design--iPhone-15/0x0.jpg?crop=4855,3644,x567,y0,safe&height=533&width=711&fit=bounds"
+                  alt="watch"
+                />
+                <div className="famous-content position-absolute ">
+                  <h5>Big Screen</h5>
+                  <h6>Smart Watch series 7</h6>
+                  <p>From $399 0r $16.2/mo. For 25 mo.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <section className="special-wrapper py-5 home-wrapper-2">
         <div className="container-xxl">
           <div className="row ">
@@ -262,6 +314,22 @@ function Home() {
               <SpecialProduct />
               <SpecialProduct />
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="popular-wrapper py-5 home-wrapper-2">
+        <div className="container-xxl">
+          <div className="row">
+            <div className="col-12">
+              <h3 className="section-heading">Our Popular Products</h3>
+            </div>
+            <div className="col-2"></div>
+            <div className="col-2"></div>
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
           </div>
         </div>
       </section>
