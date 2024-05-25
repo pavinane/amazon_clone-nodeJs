@@ -12,7 +12,16 @@ function ProductCard() {
           </Link>
         </div>
         <div className="product-image">
-          <img src="images/watch.jpg" alt="product images" />
+          <img
+            src="images/watch.jpg"
+            className="img-fluid"
+            alt="product images"
+          />
+          <img
+            src="images/watch-1.webp"
+            className="img-fluid"
+            alt="product images"
+          />
         </div>
         <div className="product-details">
           <h6 className="brand"> Havels</h6>

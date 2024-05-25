@@ -330,6 +330,34 @@ footer .input-group-text {
   font-size: 16px;
 }
 
+.product-card>.product-image {
+  height: 270px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-card>.product-image>img {
+  object-fit: contain;
+}
+
+.product-card>.product-image>img:last-child {
+  display: none;
+
+}
+
+.product-card:hover>.product-image>img:nth-child(1) {
+  display: none;
+}
+
+.product-card:hover>.product-image>img:last-child {
+  display: block;
+  height: 80%;
+  margin: auto;
+}
+
+
+
 .action-bar {
   top: 12%;
   right: -10%;
