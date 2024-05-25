@@ -43,6 +43,11 @@ a {
   border-color: inherit;
 }
 
+
+.gap-5 {
+  gap: 5px
+}
+
 .gap-10 {
   gap: 10px
 }
@@ -353,7 +358,8 @@ footer .input-group-text {
 .product-card:hover>.product-image>img:last-child {
   display: block;
   height: 80%;
-  margin: auto;
+  /* margin: auto; */
+  transition: 0.3s;
 }
 
 
@@ -365,3 +371,11 @@ footer .input-group-text {
 }
 
 /* Product  Card End */
+/* Special Product Start */
+.special-product-card {
+  padding: 20px 10px;
+  border-radius: 10px;
+  background-color: white;
+}
+
+/* Special Product  End */
